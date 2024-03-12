@@ -6,6 +6,8 @@ from llama_index.core.chat_engine.types import BaseChatEngine
 from llama_index.core.llms import ChatMessage, MessageRole
 from app.engine import get_chat_engine
 
+from llama_index.core.schema import MetadataMode
+
 chat_router = r = APIRouter()
 
 
@@ -55,5 +57,15 @@ async def chat(
             if await request.is_disconnected():
                 break
             yield token
+        
+        sources = response.source_nodes
+        yield f"\n---\n**Sources ({len(response.source_nodes)})**:\n"
+        for i, node in enumerate(response.source_nodes):
+            # If client closes connection, stop sending events
+            if await request.is_disconnected():
+                break
+            content= node.get_content(metadata_mode=MetadataMode.LLM)
+            yield f"\n\n**SOURCE {i+1} (len: {len(content)})**:\n"
+            yield f"\n{content[:100]}...{content[-100:]}\n"
 
     return StreamingResponse(event_generator(), media_type="text/plain")

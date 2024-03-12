@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   backend:
+    image: backend
     build: 
       context: .
       dockerfile: backend/Dockerfile
@@ -9,8 +10,11 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-      # - /home/peanut/.cache/huggingface:/root/.cache/huggingface
+      - /home/peanut/.cache/huggingface:/root/.cache/huggingface
     command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - weaviate
+      - ollama
 
   frontend:
     build: 
@@ -22,3 +26,48 @@ services:
       - ./frontend:/app
       - /app/node_modules
     command: npm run dev
+  
+  generate_datasource:
+    image: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app
+      - /home/peanut/.cache/huggingface:/root/.cache/huggingface
+    command: poetry run python -m app.engine.generate
+    profiles: [generate]
+    depends_on:
+      - weaviate
+
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.24.1
+    ports:
+    - 8080:8080
+    - 50051:50051
+    volumes:
+    - ./backend/data/weaviate_data:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+  
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - 11434:11434
+    volumes:
+      - ./ollama/ollama:/root/.ollama
+    environment:
+      OLLAMA_ORIGINS: "*"
