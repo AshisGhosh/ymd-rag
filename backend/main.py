@@ -7,6 +7,7 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.api.routers.chat import chat_router
 from app.settings import init_settings
 
@@ -30,6 +31,8 @@ if environment == "dev":
     )
 
 app.include_router(chat_router, prefix="/api/chat")
+app.mount("/pdfs", StaticFiles(directory="data/processed_data"), name="pdfs")
+
 
 
 if __name__ == "__main__":

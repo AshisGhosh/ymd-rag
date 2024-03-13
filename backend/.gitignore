@@ -1,3 +1,6 @@
 __pycache__
 storage
 .env
+/data/*
+!/data/processed_data
+!/data/*.py

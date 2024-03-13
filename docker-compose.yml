@@ -27,6 +27,17 @@ services:
       - /app/node_modules
     command: npm run dev
   
+  process_data:
+    image: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app
+      - /home/peanut/.cache/huggingface:/root/.cache/huggingface
+    command: poetry run python -m data.process_data
+    profiles: [process_data]
+  
   generate_datasource:
     image: backend
     build:
