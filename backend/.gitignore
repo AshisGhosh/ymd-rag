@@ -3,4 +3,6 @@ storage
 .env
 /data/*
 !/data/processed_data
-!/data/*.py
+!/data/eval_data
+!/data/**/*.py
+!/data/**/*.json

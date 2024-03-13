@@ -50,6 +50,19 @@ services:
     profiles: [generate]
     depends_on:
       - weaviate
+  
+  evaluate:
+    image: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app
+      - /home/peanut/.cache/huggingface:/root/.cache/huggingface
+    command: poetry run python -m app.engine.evaluate
+    profiles: [evaluate]
+    depends_on:
+      - weaviate
 
   weaviate:
     command:

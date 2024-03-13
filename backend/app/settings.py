@@ -7,6 +7,10 @@ from llama_index.llms.openrouter import OpenRouter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core.settings import Settings
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def init_settings():
     # llm_model = os.getenv("MODEL", "gpt-3.5-turbo")
@@ -20,7 +24,7 @@ def init_settings():
     # ollama_llm.base_url="http://ollama:11434"
     # Settings.llm = ollama_llm
     # Settings.llm = Ollama(model="gemma:2b", request_timeout=30.0)
-    Settings.llm = OpenRouter(model="mistralai/mistral-7b-instruct:free")
+    Settings.llm = OpenRouter(model="mistralai/mistral-7b-instruct:free", max_retries=60, request_timeout=30.0)
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     Settings.chunk_size = 512
     Settings.chunk_overlap = 20
