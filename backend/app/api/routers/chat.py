@@ -22,6 +22,10 @@ class _ChatData(BaseModel):
 START_OF_SOURCES_TOKEN="\n<START_OF_SOURCES>"
 START_OF_SOURCE_TOKEN="\n<START_OF_SOURCE>"
 END_OF_SOURCE_TOKEN="\n<END_OF_SOURCE>"
+START_OF_PATH_TOKEN="\n<START_OF_PATH>"
+END_OF_PATH_TOKEN="\n<END_OF_PATH>"
+SCORE_THRESHOLD=0.6
+
 @r.post("")
 async def chat(
     request: Request,
@@ -60,20 +64,23 @@ async def chat(
             yield token
         
         sources = response.source_nodes
-        yield f"\n\n{START_OF_SOURCES_TOKEN}\n"
-        for i, node in enumerate(response.source_nodes):
-            # If client closes connection, stop sending events
-            if await request.is_disconnected():
-                break
-            content= node.get_text()
-            yield f"\n\n{START_OF_SOURCE_TOKEN}\n"
-            yield f"\n\n**[{i+1}]**:\n"
-            metadata = node.metadata
-            if "file_name" in metadata.keys():
-                yield f"\n\nFile: {metadata['file_name']}"
-            if "file_path" in metadata.keys():
-                yield f"\n\nPath: {metadata['file_path']}"
-            yield f"\n{content[:100]}...{content[-100:]}\n"
-            yield f"\n\n{END_OF_SOURCE_TOKEN}\n"
+        qualified_sources = [source for source in sources if source.get_score() > SCORE_THRESHOLD]
+        if qualified_sources:
+            yield f"\n\n{START_OF_SOURCES_TOKEN}\n"
+            for i, node in enumerate(qualified_sources):
+                # If client closes connection, stop sending events
+                if await request.is_disconnected():
+                    break
+                content= node.get_text()
+                yield f"\n\n{START_OF_SOURCE_TOKEN}\n"
+                yield f"\n\n**[{i+1}]**:"
+                metadata = node.metadata
+                if "file_name" in metadata.keys():
+                    yield f"{metadata['file_name']}"
+                if "file_path" in metadata.keys():
+                    yield f"\n\n{START_OF_PATH_TOKEN}{metadata['file_path']}{END_OF_PATH_TOKEN}"
+                # yield f'\n\n"{content[:200]}...{content[-200:]}"\n'
+                yield f'\n\n_Relevance Score: {node.get_score()}_'
+                yield f"\n\n{END_OF_SOURCE_TOKEN}\n"
 
     return StreamingResponse(event_generator(), media_type="text/plain")

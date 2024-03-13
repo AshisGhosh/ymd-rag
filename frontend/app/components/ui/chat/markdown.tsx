@@ -15,6 +15,11 @@ const MemoizedReactMarkdown: FC<Options> = memo(
 const START_OF_SOURCES = "<START_OF_SOURCES>"
 const START_OF_SOURCE = "<START_OF_SOURCE>"
 const END_OF_SOURCE = "<END_OF_SOURCE>"
+const START_OF_PATH = "<START_OF_PATH>"
+const END_OF_PATH = "<END_OF_PATH>"
+
+const ORIGINAL_DATA_SOURCE = "/app/data/processed_data"
+const RUNTIME_DATA_SOURCE = "http://localhost:8000/pdfs"
 
 const SourceMarkdown=({ content }: { content: string }) => (
     <div>
@@ -24,10 +29,14 @@ const SourceMarkdown=({ content }: { content: string }) => (
             return null;
               }
           const parts = source.split(END_OF_SOURCE);
+          const original_path = parts && parts[0].split(START_OF_PATH)[1].split(END_OF_PATH)[0];
+          const runtime_path = original_path.replace(ORIGINAL_DATA_SOURCE, RUNTIME_DATA_SOURCE);
+          const source_str = parts && parts[0].split(START_OF_PATH)[0] + parts[0].split(START_OF_PATH)[1].split(END_OF_PATH)[1];
+
           return (
-            <div key={index} className="mb-5 bg-gray-100 rounded-lg p-2">
-              <a href={parts && parts[0]} target="_blank" rel="noreferrer">
-                <Markdown content={parts && parts[0]}/>
+            <div key={index} className="mb-5 bg-gray-100 hover:bg-gray-300 rounded-lg p-2">
+              <a href={runtime_path} target="_blank" rel="noreferrer">
+                <Markdown content={source_str}/>
               </a>
             </div>
           );
