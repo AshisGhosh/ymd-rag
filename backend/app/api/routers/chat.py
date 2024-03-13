@@ -19,7 +19,9 @@ class _Message(BaseModel):
 class _ChatData(BaseModel):
     messages: List[_Message]
 
-
+START_OF_SOURCES_TOKEN="\n<START_OF_SOURCES>"
+START_OF_SOURCE_TOKEN="\n<START_OF_SOURCE>"
+END_OF_SOURCE_TOKEN="\n<END_OF_SOURCE>"
 @r.post("")
 async def chat(
     request: Request,
@@ -42,11 +44,10 @@ async def chat(
     messages = [
         ChatMessage(
             role=m.role,
-            content=m.content,
+            content=m.content.split(START_OF_SOURCES_TOKEN)[0],
         )
         for m in data.messages
     ]
-
     # query chat engine
     response = await chat_engine.astream_chat(lastMessage.content, messages)
 
@@ -59,13 +60,20 @@ async def chat(
             yield token
         
         sources = response.source_nodes
-        yield f"\n---\n**Sources ({len(response.source_nodes)})**:\n"
+        yield f"\n\n{START_OF_SOURCES_TOKEN}\n"
         for i, node in enumerate(response.source_nodes):
             # If client closes connection, stop sending events
             if await request.is_disconnected():
                 break
-            content= node.get_content(metadata_mode=MetadataMode.LLM)
-            yield f"\n\n**SOURCE {i+1} (len: {len(content)})**:\n"
+            content= node.get_text()
+            yield f"\n\n{START_OF_SOURCE_TOKEN}\n"
+            yield f"\n\n**[{i+1}]**:\n"
+            metadata = node.metadata
+            if "file_name" in metadata.keys():
+                yield f"\n\nFile: {metadata['file_name']}"
+            if "file_path" in metadata.keys():
+                yield f"\n\nPath: {metadata['file_path']}"
             yield f"\n{content[:100]}...{content[-100:]}\n"
+            yield f"\n\n{END_OF_SOURCE_TOKEN}\n"
 
     return StreamingResponse(event_generator(), media_type="text/plain")
