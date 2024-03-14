@@ -35,7 +35,7 @@ services:
     volumes:
       - ./backend:/app
       - /home/peanut/.cache/huggingface:/root/.cache/huggingface
-    command: poetry run python -m data.process_data
+    command: poetry run python -u -m data.process_data
     profiles: [process_data]
   
   generate_datasource:
@@ -46,7 +46,7 @@ services:
     volumes:
       - ./backend:/app
       - /home/peanut/.cache/huggingface:/root/.cache/huggingface
-    command: poetry run python -m app.engine.generate
+    command: poetry run python -u -m app.engine.generate
     profiles: [generate]
     depends_on:
       - weaviate
@@ -59,7 +59,7 @@ services:
     volumes:
       - ./backend:/app
       - /home/peanut/.cache/huggingface:/root/.cache/huggingface
-    command: poetry run python -m app.engine.evaluate
+    command: poetry run python -u -m app.engine.evaluate
     profiles: [evaluate]
     depends_on:
       - weaviate
