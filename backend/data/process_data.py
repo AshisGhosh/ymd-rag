@@ -40,19 +40,6 @@ def walk_and_convert(source_dir, target_dir):
                 print(f"Converting: {source_path} to PDF")
                 convert_doc_to_pdf(source_path, target_path)
 
-
-            # if file.endswith(".docx"):
-            #     source_path = os.path.join(root, file)
-            #     relative_path = os.path.relpath(source_path, source_dir)
-            #     target_path = os.path.join(target_dir, relative_path)
-            #     target_path = os.path.splitext(target_path)[0] + '.pdf'
-                
-            #     # Ensure target directory exists
-            #     os.makedirs(os.path.dirname(target_path), exist_ok=True)
-                
-            #     print(f"Converting: {source_path} to {target_path}")
-            #     convert_docx_to_pdf(source_path, target_path)
-
             if file.endswith(".pdf"):
                 source_path = os.path.join(root, file)
                 relative_path = os.path.relpath(source_path, source_dir)
