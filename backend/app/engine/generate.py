@@ -50,7 +50,8 @@ def generate_datasource():
     #     index_name=os.environ["PINECONE_INDEX_NAME"],
     #     environment=os.environ["PINECONE_ENVIRONMENT"],
     # )
-    storage_context = StorageContext.from_defaults(vector_store=store, docstore=docstore)
+    # storage_context = StorageContext.from_defaults(vector_store=store, docstore=docstore)
+    storage_context = StorageContext.from_defaults(vector_store=store)
 
     # leaf_nodes = get_leaf_nodes(nodes)
     VectorStoreIndex.from_documents(

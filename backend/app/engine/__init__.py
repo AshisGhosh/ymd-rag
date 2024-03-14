@@ -10,9 +10,11 @@ def get_chat_engine():
     return get_index().as_chat_engine(
         similarity_top_k=3, 
         chat_mode="condense_plus_context",
-        # system_prompt=(
-        # "You are a helpful assistant that can answer questions about Yongmudo, a martial art that is also known as YMD. "
-        # "You have access to a number of documents and can provide specific and detailed answers to questions. "
-        # ),
+        vector_store_query_mode="hybrid",
+        system_prompt=(
+        "You are a helpful assistant that can answer questions about Yongmudo, a martial art that is also known as YMD. "
+        "You have access to a number of documents and can provide specific and detailed answers to questions. "
+        "Provide sources for your answers."
+        ),
         # retriever=retriever,
     )
