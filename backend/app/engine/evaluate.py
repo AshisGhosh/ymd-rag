@@ -30,11 +30,14 @@ from llama_index.core.vector_stores.types import (
     VectorStoreQuery,
 )
 
+from llama_index.core.postprocessor import SentenceTransformerRerank
+
+
 from app.settings import init_settings
 from app.engine import get_index
 
 EVAL_PARENT_DIR = "data/eval_data"
-EVAL_ID = "default_query_engine"
+EVAL_ID = "sentence_rerank_with_hybrid"
 EVAL_DIR = f"{EVAL_PARENT_DIR}/{EVAL_ID}"
 
 
@@ -44,6 +47,17 @@ def get_query_engine():
         query_engine = index.as_query_engine()
     if EVAL_ID == "hybrid_search":
         query_engine = index.as_query_engine(vector_store_query_mode="hybrid")
+    if EVAL_ID == "sentence_rerank_with_hybrid":
+        query_engine = index.as_query_engine(
+            similarity_top_k=10,
+            node_postprocessors=[
+                SentenceTransformerRerank(
+                    model="cross-encoder/ms-marco-MiniLM-L-2-v2", top_n=3
+                )
+            ],
+            response_mode="tree_summarize",
+        )
+
     return query_engine
 
 def cache_object(obj, filename):

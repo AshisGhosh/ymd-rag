@@ -79,7 +79,7 @@ async def chat(
                     yield f"{metadata['file_name']}"
                 if "file_path" in metadata.keys():
                     yield f"\n\n{START_OF_PATH_TOKEN}{metadata['file_path']}{END_OF_PATH_TOKEN}"
-                # yield f'\n\n"{content[:200]}...{content[-200:]}"\n'
+                yield f'\n\n"{content[:200]}..."\n'
                 yield f'\n\n_Relevance Score: {node.get_score()}_'
                 yield f"\n\n{END_OF_SOURCE_TOKEN}\n"
 
