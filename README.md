@@ -45,7 +45,8 @@ Both of the following were qualitiatively selected for a balance of processing t
 
 
 
-# Next Steps
+# Next Steps & Roadmap
+* Move from chat engine to agent implement web scraper for [yongmudo.org](http://www.yongmudo.org) as a tool
 * Implement [auto merging retrieval](https://docs.llamaindex.ai/en/stable/examples/retrievers/auto_merging_retriever.html) for improved performance
 * Add observability via [Langfuse](http://www.langfuse.com) for prompt engineering inspection and performance tracking
 * Test with other models, notably `Gemma 7B-it`. It's tuning for safety and accuracy makes it ideal for this application. At the time of writing, the `LlamaIndex` integration has an issue with it's chat template.
