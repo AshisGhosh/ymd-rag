@@ -37,6 +37,15 @@ EVAL_PARENT_DIR = "data/eval_data"
 EVAL_ID = "default_query_engine"
 EVAL_DIR = f"{EVAL_PARENT_DIR}/{EVAL_ID}"
 
+
+def get_query_engine():
+    index = get_index()
+    if EVAL_ID == "default_query_engine":
+        query_engine = index.as_query_engine()
+    if EVAL_ID == "hybrid_search":
+        query_engine = index.as_query_engine(vector_store_query_mode="hybrid")
+    return query_engine
+
 def cache_object(obj, filename):
     with open(filename, 'wb') as f:
         pickle.dump(obj, f)
@@ -59,12 +68,35 @@ async def check_for_dataset():
     finally:
         return dataset
 
+async def generate_eval_dataset():
+    os.makedirs(EVAL_DIR, exist_ok=True)
+    index = get_index()
+    print("Index loaded")
+    # nodes = index.docstore.docs.values()
+    nodes = get_nodes()
+    print(f"Nodes loaded, {len(nodes)} nodes found.")
+    # root_nodes = get_root_nodes(nodes)
+    # print(f"Root nodes parsed, {len(root_nodes)} root nodes found.")
+
+    dataset_generator = DatasetGenerator(
+        nodes,
+        show_progress=True,
+        num_questions_per_chunk=3,
+    )
+    print("Dataset generator created")
+    print("Generating dataset")
+    start_time = time.time()
+    eval_dataset = await dataset_generator.agenerate_dataset_from_nodes(num=60)
+    print(f"Dataset generated in {time.time() - start_time} seconds")
+    eval_dataset.save_json(f"{EVAL_PARENT_DIR}/mistral_eval_qr_dataset.json")
+    print(f"Dataset saved to {EVAL_PARENT_DIR}/mistral_eval_qr_dataset.json")
+
 def get_nodes():
     if load_cached_object(f"{EVAL_DIR}/mistral_nodes.pkl") is not None:
         return load_cached_object(f"{EVAL_DIR}/mistral_nodes.pkl")
     else:
         index = get_index()
-        nodes = index.storage_context.vector_store.query(VectorStoreQuery(similarity_top_k=20))
+        nodes = index.storage_context.vector_store.query(VectorStoreQuery(similarity_top_k=10))
         nodes = nodes.nodes
         cache_object(nodes, f"{EVAL_DIR}/mistral_nodes.pkl")
         return nodes
@@ -113,38 +145,16 @@ def evaluate_responses(eval_qs, responses, ref_response_strs):
         cache_object(results_df, f"{EVAL_DIR}/mistral_eval_results.pkl")
         return results_df
 
-async def generate_eval_dataset():
-    index = get_index()
-    print("Index loaded")
-    # nodes = index.docstore.docs.values()
-    nodes = get_nodes()
-    print(f"Nodes loaded, {len(nodes)} nodes found.")
-    # root_nodes = get_root_nodes(nodes)
-    # print(f"Root nodes parsed, {len(root_nodes)} root nodes found.")
-
-    dataset_generator = DatasetGenerator(
-        nodes,
-        show_progress=True,
-        num_questions_per_chunk=3,
-    )
-    print("Dataset generator created")
-    print("Generating dataset")
-    start_time = time.time()
-    eval_dataset = await dataset_generator.agenerate_dataset_from_nodes(num=60)
-    print(f"Dataset generated in {time.time() - start_time} seconds")
-    eval_dataset.save_json(f"{EVAL_DIR}/mistral_eval_qr_dataset.json")
-    print(f"Dataset saved to {EVAL_DIR}/mistral_eval_qr_dataset.json")
-
 
 async def evaluate(eval_dataset):
     print(f"Evaluating dataset with {len(eval_dataset.questions)} questions")
+    os.makedirs(EVAL_DIR, exist_ok=True)
 
     eval_qs = eval_dataset.questions
     qr_pairs = eval_dataset.qr_pairs
     ref_response_strs = [r for (_, r) in qr_pairs]
 
-    index = get_index()
-    query_engine = index.as_query_engine()
+    query_engine = get_query_engine()
 
     print("Getting responses")
     start_time = time.time()
@@ -161,6 +171,7 @@ async def evaluate(eval_dataset):
     
     eval_results = evaluate_responses(eval_qs, pred_responses, ref_response_strs)
     print(eval_results)
+    eval_results.to_csv(f"{EVAL_DIR}/mistral_eval_results.csv")
 
     # base_pred_response_strs = [str(p) for p in base_pred_responses]
 
