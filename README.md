@@ -34,7 +34,7 @@ Run | Correctness | Relevancy | Faithfulness | Semantic Similarity
 --- | --- | --- | --- |--- 
 Default | 3.067 | 0.967 | 0.267 | 0.916
 Hybrid Search| 3.133 | 0.967 | 0.433 | 0.936
-Sentence Rerank | 
+Sentence Rerank | 3.033 | 0.833 | 0.200 | 0.914
 
 
 
