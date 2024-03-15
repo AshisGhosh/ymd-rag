@@ -50,6 +50,7 @@ def get_query_engine():
     if EVAL_ID == "sentence_rerank_with_hybrid":
         query_engine = index.as_query_engine(
             similarity_top_k=10,
+            vector_store_query_mode="hybrid",
             node_postprocessors=[
                 SentenceTransformerRerank(
                     model="cross-encoder/ms-marco-MiniLM-L-2-v2", top_n=3
