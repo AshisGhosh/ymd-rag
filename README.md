@@ -12,14 +12,14 @@ This project takes in that semi-structured collection of documents and converts 
 
 ## Architecture & Tech Stack
 
+<img src="assets/software.drawio.png">
+
 This project was built with:
 * LlamaIndex
 * Weaviate
 * Openrouter.ai
 * Huggingface
 
-
-Built with help from the [LlamaIndex](https://www.llamaindex.ai/) tool [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
 ## Retrieval-Augmented Generation (RAG) Strategies
 
