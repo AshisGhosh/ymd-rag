@@ -2,6 +2,8 @@
 
 [Yongmudo](http://www.yongmudo.org) is a martial art taught at UC Berkeley and is part of the UC Martial Arts Program (UCMAP). Black belt candidates as part of UCMAP submit academic martial arts papers to help deepen theirs and the the community's understanding of martial arts.
 
+<img src="assets/ymd-rag.gif" width="50%" height="50%"/>
+
 ### Datasources
 
 The collection of academic papers have been largely consolidated by Randy Vogel, the editor of the Monograph. This is a published work which compiles select papers for that edition. Currently the 10th edition is in progress.
