@@ -17,6 +17,7 @@ This project was built with:
 * Huggingface
 
 
+Built with help from the [LlamaIndex](https://www.llamaindex.ai/) tool [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
 ## Retrieval-Augmented Generation (RAG) Strategies
 
@@ -44,6 +45,14 @@ Both of the following were qualitiatively selected for a balance of processing t
 * `chunk_overlap`: 20 
 
 
+## Install & Run
+1. `docker-compose build`
+2. `docker-compose up`
+
+The chatbot will be served at `localhost:3000`
+
+The pdfs and api will be served at `localhost:8000`
+
 
 # Next Steps & Roadmap
 * Move from chat engine to agent implement web scraper for [yongmudo.org](http://www.yongmudo.org) as a tool
@@ -53,4 +62,3 @@ Both of the following were qualitiatively selected for a balance of processing t
 
 
 
-Built with help from the [LlamaIndex](https://www.llamaindex.ai/) tool [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
