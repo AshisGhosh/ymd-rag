@@ -87,11 +87,11 @@ services:
       ENABLE_MODULES: ''
       CLUSTER_HOSTNAME: 'node1'
   
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - 11434:11434
-    volumes:
-      - ./ollama/ollama:/root/.ollama
-    environment:
-      OLLAMA_ORIGINS: "*"
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - 11434:11434
+  #   volumes:
+  #     - ./ollama/ollama:/root/.ollama
+  #   environment:
+  #     OLLAMA_ORIGINS: "*"
