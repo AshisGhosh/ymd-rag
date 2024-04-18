@@ -14,8 +14,6 @@ COPY backend/pyproject.toml backend/poetry.lock* /app/
 # Install dependencies
 RUN poetry install --no-dev
 
-RUN apt-get install -y libreoffice
-
 # The source code will be mounted via Docker Compose, so no need to COPY
 # COPY backend /app
 
