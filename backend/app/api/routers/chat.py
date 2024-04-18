@@ -65,6 +65,8 @@ async def chat(
         
         sources = response.source_nodes
         qualified_sources = [source for source in sources if source.get_score() > SCORE_THRESHOLD]
+        qualified_sources = sorted(qualified_sources, key=lambda x: x.get_score(), reverse=True)
+
         if qualified_sources:
             yield f"\n\n{START_OF_SOURCES_TOKEN}\n"
             for i, node in enumerate(qualified_sources):
@@ -78,7 +80,7 @@ async def chat(
                 if "file_name" in metadata.keys():
                     yield f"{metadata['file_name']}"
                 if "file_path" in metadata.keys():
-                    yield f"\n\n{START_OF_PATH_TOKEN}{metadata['file_path']}{END_OF_PATH_TOKEN}"
+                    yield f"\n\n{START_OF_PATH_TOKEN}{metadata['file_path']}#page={metadata['page_label']}{END_OF_PATH_TOKEN}"
                 yield f'\n\n"{content[:200]}..."\n'
                 yield f'\n\n_Relevance Score: {node.get_score()}_'
                 yield f"\n\n{END_OF_SOURCE_TOKEN}\n"

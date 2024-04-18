@@ -40,25 +40,36 @@ def generate_datasource():
     # docstore = SimpleDocumentStore()
     # docstore.add_documents(nodes)
 
+    logger.info("Connecting to Weaviate...")
+
     client = weaviate.Client("http://weaviate:8080")
     store = WeaviateVectorStore(
         weaviate_client=client, 
         index_name="YMDIndex"
         )
+    
+    logger.info("Finished connecting to Weaviate.")
     # store = PineconeVectorStore(
     #     api_key=os.environ["PINECONE_API_KEY"],
     #     index_name=os.environ["PINECONE_INDEX_NAME"],
     #     environment=os.environ["PINECONE_ENVIRONMENT"],
     # )
     # storage_context = StorageContext.from_defaults(vector_store=store, docstore=docstore)
-    storage_context = StorageContext.from_defaults(vector_store=store)
 
+    logger.info("Creating storage context...")
+    storage_context = StorageContext.from_defaults(vector_store=store)
+    logger.info("Finished creating storage context.")
+    
+    logger.info("Creating embeddings...")
     # leaf_nodes = get_leaf_nodes(nodes)
     VectorStoreIndex.from_documents(
         documents, # can replace with nodes
         storage_context=storage_context,
         show_progress=True,  # this will show you a progress bar as the embeddings are created
     )
+    logger.info("Finished creating embeddings.")
+
+
     logger.info(
         f"Successfully created embeddings and save to your Weaviate index YMDIndex"
     )

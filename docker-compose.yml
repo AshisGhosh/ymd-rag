@@ -11,10 +11,9 @@ services:
     volumes:
       - ./backend:/app
       - /home/peanut/.cache/huggingface:/root/.cache/huggingface
-    command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000
+    command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - weaviate
-      - ollama
 
   frontend:
     build: 
@@ -72,7 +71,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: cr.weaviate.io/semitechnologies/weaviate:1.24.1
+    image: cr.weaviate.io/semitechnologies/weaviate:latest
     ports:
     - 8080:8080
     - 50051:50051
