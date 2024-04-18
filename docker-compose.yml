@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: backend
+    image: ashisghosh1/yongmudo-rag:backend-latest
     build: 
       context: .
       dockerfile: backend/Dockerfile
@@ -16,6 +16,7 @@ services:
       - weaviate
 
   frontend:
+    image: ashisghosh1/yongmudo-rag:frontend-latest
     build: 
       context: ./frontend
       dockerfile: Dockerfile
