@@ -8,7 +8,6 @@ from llama_index.core.storage import StorageContext
 from llama_index.core.indices import VectorStoreIndex
 import weaviate
 from llama_index.vector_stores.weaviate import WeaviateVectorStore
-# from llama_index.vector_stores.pinecone import PineconeVectorStore
 from app.settings import init_settings
 from app.engine.loader import get_documents
 from llama_index.core.node_parser import (
@@ -49,12 +48,6 @@ def generate_datasource():
         )
     
     logger.info("Finished connecting to Weaviate.")
-    # store = PineconeVectorStore(
-    #     api_key=os.environ["PINECONE_API_KEY"],
-    #     index_name=os.environ["PINECONE_INDEX_NAME"],
-    #     environment=os.environ["PINECONE_ENVIRONMENT"],
-    # )
-    # storage_context = StorageContext.from_defaults(vector_store=store, docstore=docstore)
 
     logger.info("Creating storage context...")
     storage_context = StorageContext.from_defaults(vector_store=store)
