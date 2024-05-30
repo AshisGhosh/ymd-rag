@@ -25,7 +25,7 @@ def init_settings():
     # ollama_llm.base_url="http://ollama:11434"
     # Settings.llm = ollama_llm
     # Settings.llm = Ollama(model="gemma:2b", request_timeout=30.0)
-    Settings.llm = OpenRouter(model="mistralai/mistral-7b-instruct:free", max_retries=60, request_timeout=30.0)
+    Settings.llm = OpenRouter(model="meta-llama/llama-3-8b-instruct:free", max_retries=60, request_timeout=30.0)
     Settings.embed_model = FastEmbedEmbedding(model_name="BAAI/bge-small-en-v1.5")
     # Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     Settings.chunk_size = 512
