@@ -72,7 +72,8 @@ services:
     - '8080'
     - --scheme
     - http
-    image: cr.weaviate.io/semitechnologies/weaviate:latest
+    # image: cr.weaviate.io/semitechnologies/weaviate:latest
+    image: cr.weaviate.io/semitechnologies/weaviate@sha256:4351143b921c1d4c3ca015a8bc917643f5e28ef6a94401a39c79b20aa4b02492
     ports:
     - 8080:8080
     - 50051:50051
