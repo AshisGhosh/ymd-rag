@@ -86,6 +86,7 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'none'
       ENABLE_MODULES: ''
       CLUSTER_HOSTNAME: 'node1'
+      DISK_USE_READONLY_PERCENTAGE: 99
   
   # ollama:
   #   image: ollama/ollama:latest
